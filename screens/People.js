@@ -1,24 +1,19 @@
 import React from 'react'
 import Layout from '../components/Layout'
 import sanity from '../lib/sanity'
-import {FlatList, Image, ScrollView, Text, View} from 'react-native'
+import {List, ListItem} from '../components/List'
+import {Text, View} from 'react-native'
 
 const query = `*[_type == "person"] {
   _id,
   name,
-  "imageUrl": image.asset->url,
-  "movies": *[_type == "movie" && references(^._id)] {
-    _id,
-    title
-  }
+  "imageUrl": image.asset->url
 }[0...50]
 `
 
-const getId = value => value._id
-
 export default class People extends React.Component {
   static navigationOptions = {
-    title: 'People',
+    title: 'People'
   }
 
   state = {
@@ -33,20 +28,16 @@ export default class People extends React.Component {
     const {navigate} = this.props.navigation
 
     return (
-      <View
-        style={{flex: 1, flexDirection: 'column'}}
-      >
-        {person.imageUrl && <Image
-          source={{uri: `${person.imageUrl}?h=50`}}
-          style={{width: 50, height: 50}}
-        />}
-        <Text onPress={() => navigate('Person', {
-          id: person._id,
-          title: person.name
-        })}>
-          {person.name}
-        </Text>
-      </View>
+      <ListItem
+        imageUrl={person.imageUrl}
+        heading={person.name}
+        onPress={() =>
+          navigate('Person', {
+            id: person._id,
+            title: person.title
+          })
+        }
+      />
     )
   }
 
@@ -54,11 +45,7 @@ export default class People extends React.Component {
     const {people} = this.state
     return (
       <Layout>
-        <FlatList
-          data={people}
-          keyExtractor={getId}
-          renderItem={this.renderPerson}
-        />
+        <List data={people} renderItem={this.renderPerson} />
       </Layout>
     )
   }

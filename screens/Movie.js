@@ -1,7 +1,9 @@
 import React from 'react'
 import Layout from '../components/Layout'
 import sanity from '../lib/sanity'
-import {FlatList, Image, ScrollView, Text, View} from 'react-native'
+import {StyleSheet, Text, View, Image} from 'react-native'
+import {List, ListItem} from '../components/List'
+import Heading from '../components/Heading'
 
 const query = `*[_type == "movie" && _id == $id] {
   _id,
@@ -20,7 +22,13 @@ const query = `*[_type == "movie" && _id == $id] {
 }[0]
 `
 
-const getKey = value => value._key
+const styles = StyleSheet.create({
+  header: {
+    paddingHorizontal: 8
+  }
+})
+
+const getCastKey = cast => cast._key
 
 export default class Movie extends React.Component {
   static navigationOptions = ({navigation, screenProps}) => ({
@@ -43,21 +51,16 @@ export default class Movie extends React.Component {
   renderCast = ({item: cast}) => {
     const {navigate} = this.props.navigation
     return (
-      <View>
-        {cast.person.imageUrl && (
-          <Image
-            source={{uri: `${cast.person.imageUrl}?h=100`}}
-            style={{width: 50, height: 50}}
-          />
-        )}
-        <Text onPress={() => navigate('Person', {
-          id: cast.person._id,
-          title: cast.person.name
-        })}>
-          {cast.person.name}
-        </Text>
-        <Text> as {cast.characterName}</Text>
-      </View>
+      <ListItem
+        imageUrl={cast.person.imageUrl}
+        heading={`${cast.person.name} as ${cast.characterName}`}
+        onPress={() =>
+          navigate('Person', {
+            id: cast.person._id,
+            title: cast.person.name
+          })
+        }
+      />
     )
   }
 
@@ -66,25 +69,26 @@ export default class Movie extends React.Component {
     if (isLoading) {
       return (
         <Layout>
-          <Text>
-            Loading…
-          </Text>
+          <Text>Loading…</Text>
         </Layout>
       )
     }
+
     return (
       <Layout>
-        <Text>
-          {movie.title} ({movie.releaseDate.substr(0, 4)})
-        </Text>
-        {movie.posterUrl && <Image
-          source={{uri: `${movie.posterUrl}?h=100`}}
-          style={{width: 50, height: 50}}
-        />}
-        <View>
-          <Text>Cast</Text>
-          <FlatList data={movie.cast} renderItem={this.renderCast} keyExtractor={getKey} />
+        <View style={styles.header}>
+          <Heading>
+            {movie.title} ({movie.releaseDate.substr(0, 4)})
+          </Heading>
+
+          {movie.posterUrl && (
+            <Image source={{uri: `${movie.posterUrl}?w=272`}} style={{width: 136, height: 204}} />
+          )}
+
+          <Heading level={2}>Cast</Heading>
         </View>
+
+        <List keyExtractor={getCastKey} data={movie.cast} renderItem={this.renderCast} />
       </Layout>
     )
   }
