@@ -40,11 +40,6 @@ export default class Movie extends React.Component {
     })
   }
 
-  state = {
-    movie: null,
-    isLoading: true
-  }
-
   renderCast = ({item: cast}) => {
     const {navigate} = this.props.navigation
     return (

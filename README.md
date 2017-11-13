@@ -1,4 +1,4 @@
-Sanity + Next.js frontend example
+Sanity + React Native app example
 ===
 
 This is an example Sanity backed [React Native](https://facebook.github.io/react-native/) app for the movies database dataset.
