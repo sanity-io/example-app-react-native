@@ -1,7 +1,7 @@
 Sanity + React Native app example
 ===
 
-This is an example Sanity backed [React Native](https://facebook.github.io/react-native/) app for the movies database dataset.
+This is an example [Sanity](https://www.sanity.io) backed [React Native](https://facebook.github.io/react-native/) app for the movies database dataset.
 
 ## Setup
 
